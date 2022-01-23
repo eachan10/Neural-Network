@@ -12,8 +12,6 @@ class Network:
         # b is each weight corresponding to neuron in the previous layer
         self.weights = [rng.standard_normal(size=[a, b]) for a, b in zip(sizes[1:], sizes[:-1])]
         self.biases = [rng.standard_normal(size=[a]) for a in sizes[1:]]
-        # self.weights = [np.reshape([0.1,-0.3,-0.5,0.2,0.4,0.6], [3,2]), np.reshape([0.1,0.3,-0.5,0.2,0.4,0.6], [2,3])]
-        # self.biases = [np.reshape([1.2, -0.6, -.08], [3]), np.reshape([0.9,-0.4], [2])]
 
     def feed_forward(self, arr):
         for w, b in zip(self.weights, self.biases):
@@ -77,7 +75,6 @@ class Network:
                 f.write(f'{correct}/{len(test_data)}\n')
 
 
-
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
@@ -108,8 +105,3 @@ if __name__ == '__main__':
 
     net = Network((784, 128, 64, 10))
     net.train(training_data, 1000, 1000, 3, test_data)
-    # nabla_b, nabla_w = net.backprop([[0.8,0.1], [0.2, 0.8]])
-
-    # print(nabla_b)
-    # print(nabla_w)
-    # print(net.feed_forward([1,0.5,0]))
