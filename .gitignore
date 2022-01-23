@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# MNIST data
+data/
+
+# output file of accuracy
+results.txt
