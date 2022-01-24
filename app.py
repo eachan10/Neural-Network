@@ -99,9 +99,3 @@ def get_mnist():
     test_images = [np.array(i) for i in test_images]
     test_data = list(zip(test_images, test_labels))
     return training_data, test_data
-
-if __name__ == '__main__':
-    training_data, test_data = get_mnist()
-
-    net = Network((784, 128, 64, 10))
-    net.train(training_data, 1000, 1000, 3, test_data)
