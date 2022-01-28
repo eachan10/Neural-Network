@@ -1,5 +1,6 @@
 import numpy as np
 
+import json
 from random import shuffle
 
 
@@ -72,6 +73,24 @@ class Network:
             print(f'Epoch {i + 1} of {epochs}\n{correct}/{len(test_data)} correct')
             with open('results.txt', mode='a') as f:
                 f.write(f'{correct}/{len(test_data)}\n')
+
+    def to_file(self, path):
+        s = {
+            'sizes': self.sizes,
+            'weights': [w.tolist() for w in self.weights],
+            'biases': [b.tolist() for b in self.biases]
+        }
+        with open(path, mode='w') as f:
+            json.dump(s, f)
+
+    @classmethod
+    def from_file(cls, path):
+        with open(path, mode='r') as f:
+            s = json.load(f)
+        net = cls(s['sizes'])
+        net.weights = [np.array(w) for w in s['weights']]
+        net.biases = [np.array(b) for b in s['biases']]
+        return net
 
 
 def sigmoid(z):
