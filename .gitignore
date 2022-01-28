@@ -131,5 +131,7 @@ dmypy.json
 # MNIST data
 data/
 
-# output file of accuracy
+# stuff for testing
 results.txt
+network.json
+test.py
