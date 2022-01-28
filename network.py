@@ -34,7 +34,7 @@ class Network:
             activations.append(arr)
 
         # compute output error
-        delta = cost_deriv(activations[-1], y) * sigmoid_prime(zs[-1])
+        delta = cost_deriv(activations[-1], y)  # * sigmoid_prime(zs[-1])
         nabla_b.append(delta)
         nabla_w.append(activations[-2] * delta.reshape((len(delta), 1)))
         
@@ -81,5 +81,12 @@ def sigmoid_prime(z):
     t = sigmoid(z)
     return t * (1 - t)
 
-def cost_deriv(output, y):
-    return output - y
+# def relu(z):
+#     return np.where(z<0, 0, z)
+
+# def relu_prime(z):
+#     return np.where(z<0, 0, 1)
+
+def cost_deriv(a, y):
+    """Mean squared error derivative"""
+    return a - y
