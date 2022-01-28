@@ -74,6 +74,13 @@ class Network:
             with open('results.txt', mode='a') as f:
                 f.write(f'{correct}/{len(test_data)}\n')
 
+    def test(self, test_data):
+        correct = 0
+        for input, actual in test_data:
+            if np.argmax(self.feed_forward(input)) == actual:
+                correct += 1
+        print(f'{correct}/{len(test_data)} correct')
+
     def to_file(self, path):
         s = {
             'sizes': self.sizes,
