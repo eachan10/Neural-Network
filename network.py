@@ -12,6 +12,7 @@ class Network:
         # b is each weight corresponding to neuron in the previous layer
         self.weights = [rng.standard_normal(size=[a, b]) for a, b in zip(sizes[1:], sizes[:-1])]
         self.biases = [rng.standard_normal(size=[a]) for a in sizes[1:]]
+        self.training_history = []
 
     def feed_forward(self, arr):
         for w, b in zip(self.weights, self.biases):
@@ -59,20 +60,18 @@ class Network:
         self.biases = [b - db * (lr/m) for b, db in zip(self.biases, net_nabla_b)]
         self.weights = [w - dw * (lr/m) for w, dw in zip(self.weights, net_nabla_w)]
 
-    def train(self, training_data, epochs, batch_size, lr, test_data):
+    def train(self, training_data, epochs, batch_size, lr, test_data=None):
         for i in range(epochs):
             shuffle(training_data)
             for j in range(0, len(training_data), batch_size):
                 self.gradient_descent(training_data[j:j+batch_size], lr)
+            print(f'Epoch {i + 1} of {epochs}')
 
+            test_results = -1
             # test
-            correct = 0
-            for input, actual in test_data:
-                if np.argmax(self.feed_forward(input)) == actual:
-                    correct += 1
-            print(f'Epoch {i + 1} of {epochs}\n{correct}/{len(test_data)} correct')
-            with open('results.txt', mode='a') as f:
-                f.write(f'{correct}/{len(test_data)}\n')
+            if test_data is not None:
+                test_results = self.test(test_data)
+            self.training_history.append((batch_size, lr, test_results))
 
     def test(self, test_data):
         correct = 0
@@ -80,12 +79,14 @@ class Network:
             if np.argmax(self.feed_forward(input)) == actual:
                 correct += 1
         print(f'{correct}/{len(test_data)} correct')
+        return correct / len(test_data)
 
     def to_file(self, path):
         s = {
             'sizes': self.sizes,
             'weights': [w.tolist() for w in self.weights],
-            'biases': [b.tolist() for b in self.biases]
+            'biases': [b.tolist() for b in self.biases],
+            'history': self.training_history,
         }
         with open(path, mode='w') as f:
             json.dump(s, f)
@@ -97,6 +98,7 @@ class Network:
         net = cls(s['sizes'])
         net.weights = [np.array(w) for w in s['weights']]
         net.biases = [np.array(b) for b in s['biases']]
+        net.training_history = s['history']
         return net
 
 
