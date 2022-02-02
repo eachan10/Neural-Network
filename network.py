@@ -46,7 +46,7 @@ class Network:
             z = zs[-l]
             delta = w.dot(delta) * sigmoid_prime(z)
             nabla_b.insert(0, (delta))
-            nabla_w.insert(0, (activations[-l-1] * delta.reshape((len(delta), 1))))
+            nabla_w.insert(0, np.einsum('i,j->ij', delta, activations[-l-1]))
         return nabla_b, nabla_w
 
     def gradient_descent(self, data, lr):
