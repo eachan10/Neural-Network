@@ -25,8 +25,8 @@ class Network:
 
         activations = [arr]
         zs = []
-        nabla_w = []
-        nabla_b = []
+        nabla_w = [np.zeros(a.shape) for a in self.weights]
+        nabla_b = [np.zeros(a.shape) for a in self.biases]
 
         # feedforward
         for w, b in zip(self.weights, self.biases):
@@ -37,16 +37,16 @@ class Network:
 
         # compute output error
         delta = cost_deriv(activations[-1], y)  # * sigmoid_prime(zs[-1])
-        nabla_b.append(delta)
-        nabla_w.append(activations[-2] * delta.reshape((len(delta), 1)))
+        nabla_b[-1] = delta
+        nabla_w[-1] = np.einsum('i,j->ij', delta, activations[-2])
         
         # backprop error
         for l in range(2, len(self.sizes)):
             w = self.weights[-l + 1].transpose()
             z = zs[-l]
             delta = w.dot(delta) * sigmoid_prime(z)
-            nabla_b.insert(0, (delta))
-            nabla_w.insert(0, np.einsum('i,j->ij', delta, activations[-l-1]))
+            nabla_b[-l] = delta
+            nabla_w[-l] = np.einsum('i,j->ij', delta, activations[-l-1])
         return nabla_b, nabla_w
 
     def gradient_descent(self, data, lr):
